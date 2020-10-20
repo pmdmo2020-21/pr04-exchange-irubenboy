@@ -16,8 +16,12 @@ import es.iessaladillo.pedrojoya.exchange.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var b: MainActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        b = MainActivityBinding.inflate(layoutInflater)
+        setContentView(b.root)
         // TODO
     }
 
