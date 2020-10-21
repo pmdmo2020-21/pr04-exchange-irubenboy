@@ -2,11 +2,13 @@ package es.iessaladillo.pedrojoya.exchange
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import es.iessaladillo.pedrojoya.exchange.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fromIcon: TextView
     private lateinit var rdgToCoins: RadioGroup
     private lateinit var toIcon: TextView
+    private lateinit var btnExchange: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +46,29 @@ class MainActivity : AppCompatActivity() {
         rdgToCoins.setOnCheckedChangeListener { _, checkedId ->
             hideCoin(checkedId)
             toIcon.setCompoundDrawablesWithIntrinsicBounds(changeIcon(checkedId), 0, 0, 0)}
+        inputAmount.doAfterTextChanged { validate() }
+        btnExchange.setOnClickListener { exchange()}
     }
 
+    private fun exchange() {
+        hideSoftKeyboard(inputAmount)
+        TODO("Not yet implemented")
+    }
+
+    private fun validate(){
+        var count:Int = 0
+
+        for(i in inputAmount.text.toString().indices) {
+            if(inputAmount.text.toString()[i] == '.'){
+                count++
+            }
+        }
+
+        if(inputAmount.text.toString().isEmpty() || inputAmount.text.toString().startsWith(".") || count > 1){
+            inputAmount.setText(R.string.value)
+            inputAmount.selectAll()
+        }
+    }
 
     private fun hideCoin(checkedId: Int){
         when (checkedId) {

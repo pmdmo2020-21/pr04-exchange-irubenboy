@@ -7,4 +7,5 @@
     <string name="pound">Pound</string>
     <string name="toCurrency">To currency</string>
     <string name="exchange">Exchange</string>
+    <string name="value">0</string>
 </resources>
