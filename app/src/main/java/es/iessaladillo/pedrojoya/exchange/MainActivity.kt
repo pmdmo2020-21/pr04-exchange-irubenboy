@@ -38,19 +38,45 @@ class MainActivity : AppCompatActivity() {
             changeTextViewColorOnFocus(lblAmount, hasFocus)
         }
         rdgFromCoins.setOnCheckedChangeListener { _, checkedId ->
+            hideCoin(checkedId)
             fromIcon.setCompoundDrawablesWithIntrinsicBounds(changeIcon(checkedId), 0, 0, 0)}
         rdgToCoins.setOnCheckedChangeListener { _, checkedId ->
+            hideCoin(checkedId)
             toIcon.setCompoundDrawablesWithIntrinsicBounds(changeIcon(checkedId), 0, 0, 0)}
+    }
+
+
+    private fun hideCoin(checkedId: Int){
+        when (checkedId) {
+            b.fromDollar.id -> {
+                b.toDollar.isEnabled = false
+            }
+            b.fromEuro.id -> {
+                b.toEuro.isEnabled = false
+            }
+            b.fromPound.id -> {
+                b.toPound.isEnabled = false
+            }
+            b.toDollar.id -> {
+                b.fromDollar.isEnabled = false
+            }
+            b.toEuro.id -> {
+                b.fromEuro.isEnabled = false
+            }
+            b.toPound.id -> {
+                b.fromPound.isEnabled = false
+            }
+        }
     }
 
     private fun changeIcon(checkedId: Int): Int {
         var icon = 0
 
         if(checkedId == b.fromDollar.id || checkedId == b.toDollar.id){
-            icon = R.drawable.ic_dollar
+            icon = Currency.DOLLAR.drawableResId
         } else if (checkedId == b.fromEuro.id || checkedId == b.toEuro.id){
-            icon = R.drawable.ic_euro
-        } else if (checkedId == b.fromPound.id || checkedId == b.toPound.id) icon = R.drawable.ic_pound
+            icon = Currency.EURO.drawableResId
+        } else if (checkedId == b.fromPound.id || checkedId == b.toPound.id) icon = Currency.POUND.drawableResId
 
         return icon
     }
