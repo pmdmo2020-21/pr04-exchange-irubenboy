@@ -8,4 +8,5 @@
     <string name="toCurrency">To currency</string>
     <string name="exchange">Exchange</string>
     <string name="value">0</string>
+    <string name="main_exchange">%1$s - %2$s</string>
 </resources>

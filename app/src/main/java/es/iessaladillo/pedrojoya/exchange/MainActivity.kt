@@ -1,15 +1,14 @@
 package es.iessaladillo.pedrojoya.exchange
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import es.iessaladillo.pedrojoya.exchange.databinding.MainActivityBinding
+import es.iessaladillo.pedrojoya.exchange.utils.hideSoftKeyboard
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,27 +35,73 @@ class MainActivity : AppCompatActivity() {
         fromIcon = b.fromIcon
         rdgToCoins = b.rdgToCoins
         toIcon = b.toIcon
-        setInitialState(lblAmount)
+        btnExchange = b.btnExchange
+        inputAmount.requestFocus()
         inputAmount.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             changeTextViewColorOnFocus(lblAmount, hasFocus)
         }
         rdgFromCoins.setOnCheckedChangeListener { _, checkedId ->
+            showToCoin()
             hideCoin(checkedId)
             fromIcon.setCompoundDrawablesWithIntrinsicBounds(changeIcon(checkedId), 0, 0, 0)}
         rdgToCoins.setOnCheckedChangeListener { _, checkedId ->
+            showFromCoin()
             hideCoin(checkedId)
             toIcon.setCompoundDrawablesWithIntrinsicBounds(changeIcon(checkedId), 0, 0, 0)}
         inputAmount.doAfterTextChanged { validate() }
-        btnExchange.setOnClickListener { exchange()}
+        btnExchange.setOnClickListener { btnOnClick()}
     }
 
-    private fun exchange() {
-        hideSoftKeyboard(inputAmount)
-        TODO("Not yet implemented")
+    private fun showToCoin() {
+        b.toDollar.isEnabled = true
+        b.toEuro.isEnabled = true
+        b.toPound.isEnabled = true
+    }
+
+    private fun showFromCoin() {
+        b.fromDollar.isEnabled = true
+        b.fromEuro.isEnabled = true
+        b.fromPound.isEnabled = true
+    }
+
+    private fun btnOnClick() {
+        inputAmount.hideSoftKeyboard()
+        var fromCoin = ""
+        var toCoin = ""
+
+
+        when {
+            b.fromDollar.isChecked -> {
+                fromCoin = Currency.DOLLAR.toString()
+            }
+            b.fromEuro.isChecked -> {
+                fromCoin = Currency.EURO.toString()
+            }
+            b.fromPound.isChecked -> {
+                fromCoin = Currency.POUND.toString()
+            }
+        }
+        when {
+            b.toDollar.isChecked -> {
+                toCoin = Currency.DOLLAR.toString()
+            }
+            b.toEuro.isChecked -> {
+                toCoin = Currency.EURO.toString()
+            }
+            b.toPound.isChecked -> {
+                toCoin = Currency.POUND.toString()
+            }
+        }
+        val value = inputAmount.text.toString().toDouble().exchange(
+                fromCoin,  toCoin).toString()
+        Toast.makeText(this, getString(R.string.main_exchange,
+            inputAmount.text.toString() + fromCoin.toCurrency().symbol,
+            value + toCoin.toCurrency().symbol),
+            Toast.LENGTH_SHORT).show()
     }
 
     private fun validate(){
-        var count:Int = 0
+        var count = 0
 
         for(i in inputAmount.text.toString().indices) {
             if(inputAmount.text.toString()[i] == '.'){
@@ -113,8 +158,13 @@ class MainActivity : AppCompatActivity() {
        }
     }
 
+
     private fun setInitialState(v: TextView) {
         v.setTextColor(ContextCompat.getColor(this, R.color.black))
     }
 
+}
+
+private fun Double.exchange(fromCoin: String, toCoin: String): Double {
+    return toCoin.toCurrency().fromDollar(fromCoin.toCurrency().toDollar(this))
 }
